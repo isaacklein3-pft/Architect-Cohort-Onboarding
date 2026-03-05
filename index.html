@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Superstructure M4 – Cohort Onboarding and Technical Readiness Audit</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Georgia', serif; font-size: 16px; line-height: 1.7; color: #1a1a1a; background: #fafaf8; }
+    code { font-family: 'Courier New', monospace; background: #f1f5f9; border: 1px solid #e2e8f0; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+    .cover { background: #0f1923; color: #fff; padding: 80px 60px 60px; border-bottom: 4px solid #2563eb; }
+    .cover .label { font-family: 'Courier New', monospace; font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: #64748b; margin-bottom: 24px; }
+    .cover h1 { font-size: 36px; font-weight: 700; line-height: 1.2; margin-bottom: 12px; color: #f8fafc; }
+    .cover .subtitle { font-size: 17px; color: #94a3b8; margin-bottom: 40px; font-style: italic; }
+    .cover .meta { display: flex; gap: 40px; flex-wrap: wrap; }
+    .cover .meta-item { font-family: 'Courier New', monospace; font-size: 12px; }
+    .cover .meta-item span { display: block; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .cover .meta-item strong { color: #e2e8f0; font-size: 13px; }
+    .container { max-width: 860px; margin: 0 auto; padding: 60px 40px; }
+    .toc { background: #f1f5f9; border-left: 4px solid #2563eb; padding: 28px 32px; margin-bottom: 56px; border-radius: 0 6px 6px 0; }
+    .toc h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 2px; color: #64748b; margin-bottom: 16px; font-family: 'Courier New', monospace; }
+    .toc ol { list-style: none; counter-reset: toc; }
+    .toc ol li { counter-increment: toc; padding: 5px 0; }
+    .toc ol li::before { content: counter(toc, decimal-leading-zero) " "; font-family: 'Courier New', monospace; font-size: 12px; color: #94a3b8; margin-right: 8px; }
+    .toc ol li a { color: #1e40af; text-decoration: none; font-size: 14px; }
+    .section { margin-bottom: 56px; padding-bottom: 56px; border-bottom: 1px solid #e2e8f0; scroll-margin-top: 24px; }
+    .section:last-child { border-bottom: none; }
+    .section-number { font-family: 'Courier New', monospace; font-size: 12px; letter-spacing: 2px; color: #2563eb; text-transform: uppercase; margin-bottom: 8px; }
+    h2 { font-size: 26px; font-weight: 700; color: #0f172a; margin-bottom: 20px; line-height: 1.3; }
+    h3 { font-size: 18px; font-weight: 600; color: #1e293b; margin-top: 32px; margin-bottom: 12px; }
+    h4 { font-size: 14px; font-weight: 700; color: #334155; text-transform: uppercase; letter-spacing: 1px; margin-top: 24px; margin-bottom: 8px; }
+    p { margin-bottom: 16px; color: #374151; }
+    ul, ol { margin: 12px 0 20px 24px; }
+    li { margin-bottom: 8px; color: #374151; }
+    .callout { border-radius: 6px; padding: 20px 24px; margin: 24px 0; }
+    .callout.info { background: #eff6ff; border: 1px solid #bfdbfe; }
+    .callout.tradeoff { background: #faf5ff; border-left: 4px solid #a855f7; padding-left: 20px; border-radius: 0 6px 6px 0; }
+    .callout strong { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #64748b; margin-bottom: 8px; }
+    .gate-block { background: #0f1923; border-radius: 8px; padding: 28px 32px; margin: 28px 0; }
+    .gate-block .gate-label { font-family: 'Courier New', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #64748b; margin-bottom: 12px; }
+    .gate-block h3 { color: #f8fafc; margin-top: 0; font-size: 17px; }
+    .gate-block p { color: #94a3b8; font-size: 14px; margin-bottom: 0; }
+    .check-section { margin: 20px 0; }
+    .check-item { display: flex; gap: 14px; padding: 14px 16px; border: 1px solid #e2e8f0; border-radius: 6px; margin: 6px 0; background: #fff; align-items: flex-start; }
+    .check-item:hover { background: #f8fafc; }
+    .check-box { width: 20px; height: 20px; border: 2px solid #cbd5e1; border-radius: 4px; flex-shrink: 0; margin-top: 2px; }
+    .check-body { flex: 1; }
+    .check-body .c-id { font-family: 'Courier New', monospace; font-size: 11px; color: #2563eb; font-weight: bold; margin-bottom: 3px; }
+    .check-body .c-text { font-size: 14px; color: #1e293b; font-weight: 600; margin-bottom: 4px; }
+    .check-body .c-detail { font-size: 13px; color: #64748b; line-height: 1.5; }
+    .check-item.critical { border-left: 3px solid #ef4444; }
+    .check-item.high { border-left: 3px solid #f59e0b; }
+    .check-item.standard { border-left: 3px solid #2563eb; }
+    .severity-key { display: flex; gap: 20px; margin: 12px 0 20px; flex-wrap: wrap; }
+    .sev-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #374151; }
+    .sev-dot { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
+    .sev-dot.critical { background: #ef4444; }
+    .sev-dot.high { background: #f59e0b; }
+    .sev-dot.standard { background: #2563eb; }
+    .threshold-row { display: flex; gap: 0; margin: 4px 0; border: 1px solid #e2e8f0; border-radius: 6px; overflow: hidden; }
+    .th-label { background: #1e293b; color: #f8fafc; padding: 8px 16px; font-family: 'Courier New', monospace; font-size: 12px; min-width: 280px; }
+    .th-value { background: #fff; padding: 8px 16px; font-family: 'Courier New', monospace; font-size: 13px; color: #2563eb; font-weight: bold; min-width: 160px; }
+    .th-note { background: #f8fafc; padding: 8px 16px; font-size: 13px; color: #64748b; flex: 1; }
+    .phase-list { list-style: none; margin: 0; padding: 0; }
+    .phase-list > li { display: flex; gap: 20px; margin-bottom: 0; position: relative; }
+    .phase-list > li:not(:last-child)::after { content: ''; position: absolute; left: 19px; top: 44px; bottom: -8px; width: 2px; background: #e2e8f0; }
+    .phase-num { background: #2563eb; color: #fff; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Courier New', monospace; font-size: 13px; font-weight: bold; flex-shrink: 0; margin-top: 2px; }
+    .phase-body { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px 24px; margin-bottom: 16px; flex: 1; }
+    .phase-body h4 { margin-top: 0; font-size: 15px; text-transform: none; letter-spacing: 0; color: #0f172a; margin-bottom: 10px; }
+    .phase-body p { margin: 0 0 10px; font-size: 14px; }
+    .phase-body ul { margin: 8px 0 0 18px; font-size: 14px; }
+    .phase-tag { display: inline-block; border-radius: 4px; padding: 3px 10px; font-family: 'Courier New', monospace; font-size: 11px; margin-top: 6px; margin-right: 4px; }
+    .phase-tag.success { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
+    .phase-tag.fail { background: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; }
+    .phase-tag.rollback { background: #fff7ed; border: 1px solid #fdba74; color: #9a3412; }
+    .spec-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 20px 0; }
+    .spec-table th { background: #1e293b; color: #f8fafc; text-align: left; padding: 12px 16px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+    .spec-table td { padding: 12px 16px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+    .spec-table tr:nth-child(even) td { background: #f8fafc; }
+    .error-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+    .error-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 14px 16px; }
+    .error-card .e-code { font-family: 'Courier New', monospace; font-size: 11px; color: #991b1b; font-weight: bold; margin-bottom: 4px; }
+    .error-card .e-name { font-size: 13px; font-weight: 600; color: #1e293b; margin-bottom: 4px; }
+    .error-card p { font-size: 12px; color: #64748b; margin: 0; line-height: 1.5; }
+    .assumption-item { border-left: 3px solid #f59e0b; padding: 12px 16px; margin: 10px 0; background: #fff; border-radius: 0 6px 6px 0; }
+    .assumption-item .a-id { font-family: 'Courier New', monospace; font-size: 11px; color: #92400e; font-weight: bold; margin-bottom: 4px; }
+    .unknown-item { border-left: 3px solid #ef4444; padding: 12px 16px; margin: 10px 0; background: #fff; border-radius: 0 6px 6px 0; }
+    .unknown-item .u-id { font-family: 'Courier New', monospace; font-size: 11px; color: #991b1b; font-weight: bold; margin-bottom: 4px; }
+    .assumption-item p, .unknown-item p { font-size: 14px; margin: 0; color: #374151; }
+    .badge { display: inline-block; padding: 2px 9px; border-radius: 12px; font-size: 11px; font-weight: 700; font-family: 'Courier New', monospace; text-transform: uppercase; letter-spacing: 0.5px; margin-left: 8px; }
+    .badge.confirmed { background: #f0fdf4; color: #166534; border: 1px solid #86efac; }
+    .badge.open { background: #fffbeb; color: #854d0e; border: 1px solid #fcd34d; }
+    .event-list { list-style: none; margin: 0; padding: 0; }
+    .event-list li { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f1f5f9; align-items: flex-start; }
+    .event-tag { font-family: 'Courier New', monospace; font-size: 11px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 4px; padding: 2px 8px; color: #1e40af; white-space: nowrap; margin-top: 2px; }
+    .event-tag.err { background: #fef2f2; border-color: #fca5a5; color: #991b1b; }
+    .schema-block { background: #0f1923; border-radius: 8px; padding: 24px; margin: 20px 0; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.9; overflow-x: auto; }
+    .schema-block .sf { color: #93c5fd; }
+    .schema-block .st { color: #6ee7b7; }
+    .schema-block .sc { color: #64748b; font-style: italic; }
+    .schema-block .sb { color: #e2e8f0; }
+    .remediation-track { border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; margin: 16px 0; }
+    .remediation-track .rt-header { background: #1e293b; color: #f8fafc; padding: 12px 20px; font-family: 'Courier New', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center; }
+    .remediation-track .rt-header .rt-window { color: #2563eb; font-weight: bold; }
+    .remediation-track .rt-body { padding: 16px 20px; background: #fff; }
+    .remediation-track .rt-body p { font-size: 14px; margin-bottom: 8px; }
+    .remediation-track .rt-body ul { margin: 8px 0 0 18px; font-size: 14px; }
+    .score-card { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: #e2e8f0; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; margin: 20px 0; }
+    .score-cell { background: #fff; padding: 16px 20px; text-align: center; }
+    .score-cell .sc-label { font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 1px; font-family: 'Courier New', monospace; margin-bottom: 8px; }
+    .score-cell .sc-value { font-size: 24px; font-weight: 700; color: #0f172a; font-family: 'Courier New', monospace; }
+    .score-cell .sc-unit { font-size: 13px; color: #94a3b8; margin-top: 4px; }
+    .assurance { background: #0f1923; color: #e2e8f0; border-radius: 8px; padding: 32px; margin: 32px 0; }
+    .assurance .a-label { font-family: 'Courier New', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #64748b; margin-bottom: 16px; }
+    .assurance p { color: #cbd5e1; font-size: 15px; margin-bottom: 12px; }
+    .assurance p:last-child { margin-bottom: 0; }
+    .changelog-row { display: flex; gap: 16px; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
+    .changelog-row .cl-ver { font-family: 'Courier New', monospace; font-size: 12px; color: #2563eb; min-width: 40px; font-weight: bold; }
+    .changelog-row .cl-date { font-family: 'Courier New', monospace; font-size: 12px; color: #94a3b8; min-width: 100px; }
+    .changelog-row .cl-note { color: #374151; font-size: 13px; line-height: 1.6; }
+    .check-result { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; font-family: 'Courier New', monospace; text-transform: uppercase; }
+    .check-result.pass { background: #f0fdf4; color: #166534; border: 1px solid #86efac; }
+    .check-result.fail { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; }
+    .check-result.complete { color: #16a34a; font-weight: bold; font-size: 14px; }
+    .footer-bar { background: #0f1923; color: #64748b; text-align: center; padding: 32px; font-family: 'Courier New', monospace; font-size: 12px; letter-spacing: 1px; }
+    @media (max-width: 640px) { .cover { padding: 40px 24px; } .container { padding: 40px 20px; } .error-grid, .score-card { grid-template-columns: 1fr; } .threshold-row { flex-direction: column; } }
+    @media print { body { background: #fff; } .cover, .assurance, .schema-block, .gate-block { -webkit-print-color-adjust: exact; print-color-adjust: exact; } .section { page-break-inside: avoid; } }
+  </style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="label">Superstructure · Mission 4 · Founding Cohort Pilot</div>
+  <h1>Cohort Onboarding and Technical Readiness Audit</h1>
+  <div class="subtitle">Structured readiness checklist and audit framework ensuring each operator satisfies M2 and M3 standards before entering the live founding cohort</div>
+  <div class="meta">
+    <div class="meta-item"><span>Version</span><strong>1.0</strong></div>
+    <div class="meta-item"><span>Network</span><strong>Post Fiat (PFT)</strong></div>
+    <div class="meta-item"><span>Depends On</span><strong>M2 Full Suite · M3 Operator Integration Spec · M3 Deployment Pathway · M3 Routing Logic · M3 Governance Model</strong></div>
+    <div class="meta-item"><span>Owner</span><strong>Superstructure Operations</strong></div>
+    <div class="meta-item"><span>Classification</span><strong>Public</strong></div>
+    <div class="meta-item"><span>Last Updated</span><strong>March 2026</strong></div>
+  </div>
+</div>
+
+<div class="container">
+
+<div class="toc">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#purpose">Purpose and Scope</a></li>
+    <li><a href="#assumptions">Assumption Registry and Open Questions</a></li>
+    <li><a href="#gate">Audit Gate Model</a></li>
+    <li><a href="#step1">Step 1 — Telemetry and Monitoring Live-Verification Criteria</a></li>
+    <li><a href="#step2">Step 2 — Signing Ceremony Dry-Run Pass/Fail Conditions</a></li>
+    <li><a href="#step3">Step 3 — Administrative Onboarding Requirements</a></li>
+    <li><a href="#step4">Step 4 — Remediation Workflow and Grace Period Definitions</a></li>
+    <li><a href="#statemachine">Audit State Machine</a></li>
+    <li><a href="#errors">Error Codes and Typed Failure Reasons</a></li>
+    <li><a href="#schemas">Audit Record Schemas</a></li>
+    <li><a href="#events">Audit Event Registry</a></li>
+    <li><a href="#controls">Operational Controls and Runbook</a></li>
+    <li><a href="#evidence">Required Evidence Artifacts</a></li>
+    <li><a href="#assurance">Zero-Custody Audit Assurance</a></li>
+    <li><a href="#verification">Completion Verification</a></li>
+    <li><a href="#changelog">Change Log</a></li>
+  </ol>
+</div>
+
+<!-- 01 PURPOSE -->
+<div class="section" id="purpose">
+  <div class="section-number">Section 01</div>
+  <h2>Purpose and Scope</h2>
+  <p>This document is M4's entry gate. No operator joins the live Superstructure founding cohort without clearing every required check in this audit. The specifications defined in M2 and M3 describe what the system should do — this audit verifies that each specific operator can actually do it before real institutional assets are involved.</p>
+  <p>The audit covers four domains: live telemetry and OCP integration verification, signing ceremony dry-run testing, administrative onboarding (escalation contacts, SLA acknowledgment, custody attestations), and the remediation workflow for operators who fail initial checks. Each domain maps to one of the four task steps below. Every check is either a pass or a fail — there are no partial scores or weighted averages. An operator who passes 14 of 15 checks has not cleared the audit.</p>
+  <p>The audit is a one-time gate before cohort activation, not an ongoing monitoring framework. Ongoing monitoring is handled by the OCP telemetry system defined in M3. This document covers the period between an operator completing their technical setup and the moment their validator goes live with institutional participation.</p>
+
+  <div class="callout tradeoff">
+    <strong>Design Decision — Binary Pass/Fail vs Weighted Scoring</strong>
+    A weighted scoring model would let an operator compensate for a weak area (say, slightly high ceremony latency) with strength in another (excellent uptime history). We rejected this because the M3 specs define specific thresholds for operational reasons — the 2,000ms dry-run latency ceiling isn't a preference, it's the boundary above which the 120-second freshness window becomes a real operational risk. Allowing compensating factors would introduce negotiation into what should be a binary technical verification. The cost is that operators with one genuine gap cannot advance until it is fixed. That cost is the point.
+  </div>
+</div>
+
+<!-- 02 ASSUMPTIONS -->
+<div class="section" id="assumptions">
+  <div class="section-number">Section 02</div>
+  <h2>Assumption Registry and Open Questions</h2>
+
+  <div class="assumption-item">
+    <div class="a-id">ASSUMPTION-01 <span class="badge confirmed">Confirmed</span></div>
+    <p>Audit checks are performed by Superstructure operations personnel, not by automated systems alone. Automated checks flag pass/fail against defined thresholds. A human reviewer from Superstructure operations signs off on each operator's full audit record before cohort activation is granted. Automated pass on every check is necessary but not sufficient.</p>
+  </div>
+  <div class="assumption-item">
+    <div class="a-id">ASSUMPTION-02 <span class="badge confirmed">Confirmed</span></div>
+    <p>All M3 thresholds apply directly to audit criteria. The OCP telemetry polling interval (30 seconds), CRS recalculation interval (60 seconds), failover trigger thresholds, and signing ceremony freshness window (120 seconds) are carried forward unchanged. This audit verifies compliance with those thresholds — it does not redefine them.</p>
+  </div>
+  <div class="assumption-item">
+    <div class="a-id">ASSUMPTION-03 <span class="badge confirmed">Confirmed</span></div>
+    <p>Signing ceremony dry runs use test envelopes with a designated test actionClass. Test envelopes are structurally identical to production envelopes — same schema, same field requirements, same freshness window — but are flagged as test payloads so they do not trigger any on-chain action. The Maker/Checker/Reviewer sequence must be completed in full even for test envelopes.</p>
+  </div>
+  <div class="assumption-item">
+    <div class="a-id">ASSUMPTION-04 <span class="badge open">Open</span></div>
+    <p>Dry run test envelopes are issued by Superstructure operations. The mechanism for issuing test envelopes — whether through a dedicated test endpoint in the middleware or through a manual envelope construction process — has not been confirmed by Post Fiat core. This audit spec treats test envelope issuance as an operations responsibility pending that confirmation.</p>
+  </div>
+
+  <div class="unknown-item">
+    <div class="u-id">UNKNOWN-01 — Verified Inference Score baseline for new operators</div>
+    <p>A newly onboarded operator has no Verified Inference Score history. The audit uses uptime rate and telemetry delivery as the baseline proxy. The question of whether Post Fiat assigns a default starting VI score or leaves it at zero until first scored period is not yet confirmed. If zero, new operators would technically fail CRS calculation on first check. This spec defines the audit baseline as telemetry delivery rate rather than CRS-derived VI score for that reason.</p>
+  </div>
+  <div class="unknown-item">
+    <div class="u-id">UNKNOWN-02 — Minimum soak period for telemetry baseline</div>
+    <p>This spec defines a 72-hour telemetry soak period before baseline validation. Whether Post Fiat's OCP requires a different minimum observation window before an operator is eligible for CRS scoring is not confirmed.</p>
+  </div>
+</div>
+
+<!-- 03 GATE MODEL -->
+<div class="section" id="gate">
+  <div class="section-number">Section 03</div>
+  <h2>Audit Gate Model</h2>
+  <p>The audit runs in four sequential gates. An operator cannot advance to Gate 2 until Gate 1 is cleared. This sequencing is deliberate — there is no point running a signing ceremony dry run against an operator whose telemetry infrastructure is not live, and no point completing administrative onboarding for an operator who cannot pass a dry run.</p>
+
+  <div class="score-card">
+    <div class="score-cell">
+      <div class="sc-label">Gate 1</div>
+      <div class="sc-value">Telemetry</div>
+      <div class="sc-unit">Live verification · OCP ingestion · CRS baseline</div>
+    </div>
+    <div class="score-cell">
+      <div class="sc-label">Gate 2</div>
+      <div class="sc-value">Ceremony</div>
+      <div class="sc-unit">Dry run · Latency · Role sequence · Evidence</div>
+    </div>
+    <div class="score-cell">
+      <div class="sc-label">Gate 3</div>
+      <div class="sc-value">Admin</div>
+      <div class="sc-unit">Escalation contacts · SLA · Custody attestation</div>
+    </div>
+  </div>
+
+  <div class="gate-block">
+    <div class="gate-label">Final Gate — Superstructure Operations Sign-Off</div>
+    <h3>Cohort Activation Authorized</h3>
+    <p>All three gates cleared. Superstructure operations reviewer signs the operator audit record. Middleware fires <code>OPERATOR_AUDIT_COMPLETE</code>. Operator enters READY state. Institutional deployment can proceed per the M3 Institutional Deployment Pathway.</p>
+  </div>
+
+  <h3>Severity Classification for Checklist Items</h3>
+  <div class="severity-key">
+    <div class="sev-item"><div class="sev-dot critical"></div><strong>Critical</strong> — Fail blocks gate advancement. Must be resolved before any further audit activity.</div>
+    <div class="sev-item"><div class="sev-dot high"></div><strong>High</strong> — Fail blocks gate advancement. 48-hour remediation window before retest.</div>
+    <div class="sev-item"><div class="sev-dot standard"></div><strong>Standard</strong> — Fail triggers 7-day remediation window. Gate advancement blocked until resolved.</div>
+  </div>
+</div>
+
+<!-- 04 STEP 1 — TELEMETRY -->
+<div class="section" id="step1">
+  <div class="section-number">Step 01 — Gate 1</div>
+  <h2>Telemetry and Monitoring Live-Verification Criteria</h2>
+  <p>Gate 1 confirms that the operator's telemetry infrastructure is live, that the OCP is successfully ingesting their data, and that a baseline CRS can be calculated. The operator must sustain a 72-hour soak period before Gate 1 checks are run — telemetry that has been live for 30 minutes is not auditable.</p>
+
+  <h3>Threshold Reference — Gate 1</h3>
+  <div class="threshold-row"><div class="th-label">Telemetry soak period before audit</div><div class="th-value">72 hours</div><div class="th-note">Minimum continuous telemetry delivery before Gate 1 checks run</div></div>
+  <div class="threshold-row"><div class="th-label">Telemetry delivery rate (pass threshold)</div><div class="th-value">≥ 98%</div><div class="th-note">Of expected 30-second polls received by OCP during soak period</div></div>
+  <div class="threshold-row"><div class="th-label">Maximum consecutive missed polls</div><div class="th-value">3</div><div class="th-note">More than 3 consecutive missed polls triggers ERR_TELEMETRY_GAP in production — same applies during audit</div></div>
+  <div class="threshold-row"><div class="th-label">Telemetry payload schema compliance</div><div class="th-value">100%</div><div class="th-note">Every delivered payload must pass schema validation — all required fields present and typed correctly</div></div>
+  <div class="threshold-row"><div class="th-label">Uptime rate during soak period</div><div class="th-value">≥ 99.0%</div><div class="th-note">Matches M3 production SLA threshold; audit uses same floor</div></div>
+  <div class="threshold-row"><div class="th-label">p95 latency during soak period</div><div class="th-value">≤ 350ms</div><div class="th-note">10% tighter than the 400ms production failover trigger — audit baseline requires headroom</div></div>
+  <div class="threshold-row"><div class="th-label">CRS baseline (first 60-second cycle)</div><div class="th-value">≥ 75</div><div class="th-note">Above the 70 degraded threshold and below 80 exceptional; confirms scoring pipeline functional</div></div>
+  <div class="threshold-row"><div class="th-label">Telemetry signature validation</div><div class="th-value">100%</div><div class="th-note">All telemetry payloads must carry valid Ed25519 telemetrySignature field</div></div>
+  <br>
+
+  <h3>Gate 1 Checklist</h3>
+  <div class="severity-key">
+    <div class="sev-item"><div class="sev-dot critical"></div>Critical</div>
+    <div class="sev-item"><div class="sev-dot high"></div>High</div>
+    <div class="sev-item"><div class="sev-dot standard"></div>Standard</div>
+  </div>
+
+  <div class="check-section">
+    <div class="check-item critical">
+      <div class="check-box"></div>
+      <div class="check-body">
+        <div class="c-id">T-01 · Critical</div>
+        <div class="c-text">OCP is actively ingesting operator telemetry</div>
+        <div class="c-detail">Middleware confirms operator telemetry payloads are being received at the OCP ingestion endpoint. Zero payloads received after 72-hour soak = immediate fail. Evidence: OCP ingestion log showing operator telemetry records with timestamps.</div>
+      </div>
+    </div>
+    <div class="check-item critical">
+      <div class="check-box"></div>
+      <div class="check-body">
+        <div class="c-id">T-02 · Critical</div>
+        <div class="c-text">Telemetry delivery rate ≥ 98% over 72-hour soak</div>
+        <div class="c-detail">Of all expected 30-second poll intervals during the soak period, at least 98% must have delivered payloads. A 72-hour window contains 8,640 expected polls — at least 8,468 must have been received. Evidence: delivery rate calculation log from OCP.</div>
+      </div>
+    </div>
+    <div class="check-item critical">
+      <div class="check-box"></div>
+      <div class="check-body">
+        <div class="c-id">T-03 · Critical</div>
+        <div class="c-text">No consecutive missed poll sequence exceeding 3 during soak</div>
+        <div class="c-detail">Any sequence of 4 or more consecutive missed polls during the soak period is an automatic fail, regardless of overall delivery rate. This mirrors the production <code>ERR_TELEMETRY_GAP</code> trigger and confirms the operator's telemetry system does not suffer from periodic outage patterns. Evidence: consecutive gap analysis from OCP ingestion log.</div>
+      </div>
+    </div>
+    <div class="check-item high">
+      <div class="check-box"></div>
+      <div class="check-body">
+        <div class="c-id">T-04 · High</div>
+        <div class="c-text">All telemetry payloads pass schema validation</div>
+        <div class="c-detail">Every received payload must contain all required fields typed correctly per the M3 Operator Telemetry Payload schema: operatorId, validatorPubKey, timestamp, consensusParticipationStatus, uptimeRate24h, latencyP95Ms, verifiedInferenceScore, ledgerParticipationRate, allocationWeightCurrent, maintenanceDeclared, telemetrySignature. Any payload with missing or malformed fields is a schema validation failure. Evidence: schema validation pass rate log.</div>
+      </div>
+    </div>
+    <div class="check-item high">
+      <div class="check-box"></div>
+      <div class="check-body">
+        <div class="c-id">T-05 · High</div>
+        <div class="c-text">All telemetry payloads carry valid Ed25519 telemetrySignature</div>
+        <div class="c-detail">The <code>telemetrySignature</code> field must be present and valid on every payload. Unsigned or invalid-signature payloads cannot be trusted by the OCP in production and confirm the operator has not completed their signing infrastructure setup. Evidence: signature validation pass rate from OCP.</div>
+      </div>
+    </div>
+    <div class="check-item high">
+      <div class="check-box"></div>
+      <div class="check-body">
+        <div class="c-id">T-06 · High</div>
+        <div class="c-text">Uptime rate ≥ 99.0% over 72-hour soak period</div>
+        <div class="c-detail">The <code>uptimeRate24h</code> field averaged across all delivered payloads during the soak must be at or above 99.0%. This matches the M3 production SLA floor. Evidence: uptimeRate24h average from OCP payload records.</div>
+      </div>
+    </div>
+    <div class="check-item high">
+      <div class="check-box"></div>
+      <div class="check-body">
+        <div class="c-id">T-07 · High</div>
+        <div class="c-text">p95 latency ≤ 350ms over 72-hour soak period</div>
+        <div class="c-detail">The p95 latency value from <code>latencyP95Ms</code> field must stay at or below 350ms throughout the soak period — 10% tighter than the 400ms production failover trigger. Operators entering the cohort at exactly the failover threshold have no operational headroom. Evidence: latencyP95Ms distribution from OCP payload records.</div>
+      </div>
+    </div>
+    <div class="check-item standard">
+      <div class="check-box"></div>
+      <div class="check-body">
+        <div class="c-id">T-08 · Standard</div>
+        <div class="c-text">CRS baseline ≥ 75 on first completed 60-second scoring cycle</div>
+        <div class="c-detail">After the soak period, the OCP runs its first full CRS calculation against the operator. The resulting score must be at or above 75. This confirms the full scoring pipeline — telemetry ingestion, field parsing, CRS calculation — is functioning end-to-end, and that the operator is above the 70 degraded threshold with headroom. Evidence: first CRS calculation output from OCP with component scores.</div>
+      </div>
+    </div>
+    <div class="check-item standard">
+      <div class="check-box"></div>
+      <div class="check-body">
+        <div class="c-id">T-09 · Standard</div>
+        <div class="c-text">OCP routing weight assignment confirmed</div>
+        <div class="c-detail">After CRS baseline is established, the OCP must successfully assign an initial routing weight to the operator within one scoring cycle (60 seconds). Weight must be within the policy bounds defined in the institution's allocation policy (default: 10%–60%). Evidence: routing weight assignment log from OCP with policy hash and CRS snapshot.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 05 STEP 2 — CEREMONY DRY RUN -->
+<div class="section" id="step2">
+  <div class="section-number">Step 02 — Gate 2</div>
+  <h2>Signing Ceremony Dry-Run Pass/Fail Conditions</h2>
+  <p>Gate 2 confirms the operator's custody environment can support the signing ceremony workflow under production-equivalent conditions. The dry run uses test envelopes — structurally identical to production envelopes but flagged as test payloads. Every requirement that applies in production applies in the dry run. No exceptions.</p>
+  <p>The operator must complete two dry runs: one with a routine test payload (simulating a standard governance vote) and one with a time-pressure test payload delivered with a 90-second notice (simulating an emergency signing scenario). Both must pass independently.</p>
+
+  <h3>Threshold Reference — Gate 2</h3>
+  <div class="threshold-row"><div class="th-label">Envelope delivery latency (p95, pass threshold)</div><div class="th-value">≤ 2,000ms</div><div class="th-note">From envelope issuance by Superstructure ops to confirmed receipt by operator custody environment</div></div>
+  <div class="threshold-row"><div class="th-label">Ceremony completion time (routine dry run)</div><div class="th-value">≤ 300 seconds</div><div class="th-note">From envelope receipt to signed payload returned; well within 120s freshness window per individual step</div></div>
+  <div class="threshold-row"><div class="th-label">Ceremony completion time (emergency dry run)</div><div class="th-value">≤ 180 seconds</div><div class="th-note">Tighter window for emergency scenario — operator must demonstrate accelerated response capability</div></div>
+  <div class="threshold-row"><div class="th-label">Envelope freshness window</div><div class="th-value">120 seconds</div><div class="th-note">Each individual signing step must complete within 120s of envelope issuance; same as production</div></div>
+  <div class="threshold-row"><div class="th-label">Payload hash verification</div><div class="th-value">Required</div><div class="th-note">Checker must independently verify payload hash before signing; verified in dry run via attestation record</div></div>
+  <div class="threshold-row"><div class="th-label">Role sequence requirement</div><div class="th-value">Maker → Checker → Reviewer</div><div class="th-note">All three roles must be separate individuals; Reviewer cannot be waived</div></div>
+  <div class="threshold-row"><div class="th-label">Nonce uniqueness</div><div class="th-value">Required</div><div class="th-note">Each dry run ceremony must use a unique nonce; replay protection must reject a second attempt with the same nonce</div></div>
+  <div class="threshold-row"><div class="th-label">Replay protection test</div><div class="th-value">Required</div><div class="th-note">Operator must demonstrate that resubmitting a used nonce produces ERR_NONCE_REPLAY</div></div>
+  <br>
+
+  <h3>Gate 2 Checklist</h3>
+
+  <div class="check-section">
+    <div class="check-item critical">
+      <div class="check-box"></div>
+      <div class="check-body">
+        <div class="c-id">C-01 · Critical</div>
+        <div class="c-text">Envelope delivery latency ≤ 2,000ms at p95</div>
+        <div class="c-detail">Superstructure operations delivers the test envelope and timestamps issuance. The operator's custody environment must confirm receipt within 2,000ms at p95 across the two dry runs. Latency above this ceiling means the freshness window becomes a real operational risk in production, particularly during emergency scenarios. Evidence: envelope delivery timestamp log from Superstructure ops + operator custody receipt confirmation.</div>
+      </div>
+    </div>
+    <div class="check-item critical">
+      <div class="check-box"></div>
+      <div class="check-body">
+        <div class="c-id">C-02 · Critical</div>
+        <div class="c-text">Full Maker/Checker/Reviewer sequence completed with three separate individuals</div>
+        <div class="c-detail">The dry run must be completed with three distinct individuals occupying the Maker, Checker, and Reviewer roles. The operator must provide role attestation records identifying each individual by role. Any attempt to have one person occupy two roles is an immediate fail — this is the institutional control that M2 and M3 define as non-negotiable. Evidence: role attestation record with three distinct role holders.</div>
+      </div>
+    </div>
+    <div class="check-item critical">
+      <div class="check-box"></div>
+      <div class="check-body">
+        <div class="c-id">C-03 · Critical</div>
+        <div class="c-text">Reviewer role not waived</div>
+        <div class="c-detail">Separate from the three-person check — the Reviewer role must be explicitly present in the ceremony record. An operator who completes Maker and Checker but cannot staff a Reviewer has not passed the dry run, regardless of how quickly the two-step sequence was completed. Evidence: ceremony completion record with Reviewer authorization field populated.</div>
+      </div>
+    </div>
+    <div class="check-item critical">
+      <div class="check-box"></div>
+      <div class="check-body">
+        <div class="c-id">C-04 · Critical</div>
+        <div class="c-text">Checker independently verified payload hash before signing</div>
+        <div class="c-detail">The Checker must provide a written attestation confirming they independently verified the test payload hash against the test specification document before signing — not relying on the Maker's confirmation. This is the explicit control that prevents a substituted or malformed payload from being signed under time pressure. Evidence: Checker verification attestation with hash comparison record.</div>
+      </div>
+    </div>
+    <div class="check-item high">
+      <div class="check-box"></div>
+      <div class="check-body">
+        <div class="c-id">C-05 · High</div>
+        <div class="c-text">Routine dry run completed within 300 seconds of envelope receipt</div>
+        <div class="c-detail">The full Maker/Checker/Reviewer sequence for the routine dry run must complete within 300 seconds of envelope receipt. This tests that the operator's ceremony workflow is rehearsed, not improvised. Evidence: ceremony completion timestamp vs envelope receipt timestamp.</div>
+      </div>
+    </div>
+    <div class="check-item high">
+      <div class="check-box"></div>
+      <div class="check-body">
+        <div class="c-id">C-06 · High</div>
+        <div class="c-text">Emergency dry run completed within 180 seconds of envelope receipt</div>
+        <div class="c-detail">The emergency dry run, delivered with 90-second notice, must complete within 180 seconds of envelope receipt. This confirms the operator can mobilize all three roles quickly under emergency conditions. An operator who passes the routine dry run but fails the emergency dry run has not demonstrated production readiness for Severity 1 events. Evidence: ceremony completion timestamp vs envelope receipt timestamp for emergency run.</div>
+      </div>
+    </div>
+    <div class="check-item high">
+      <div class="check-box"></div>
+      <div class="check-body">
+        <div class="c-id">C-07 · High</div>
+        <div class="c-text">Signed payload hash matches test envelope canonical payload</div>
+        <div class="c-detail">The signed payload returned by the operator must have a verifiable hash match to the canonical payload in the test envelope. A hash mismatch means the operator signed something other than what was delivered — the most serious possible ceremony failure. Evidence: Superstructure ops hash verification of returned signed payload.</div>
+      </div>
+    </div>
+    <div class="check-item high">
+      <div class="check-box"></div>
+      <div class="check-body">
+        <div class="c-id">C-08 · High</div>
+        <div class="c-text">Replay protection produces ERR_NONCE_REPLAY on duplicate nonce resubmission</div>
+        <div class="c-detail">After a successful dry run, Superstructure ops resubmits the same ceremony with the same nonce. The operator's custody environment must reject the resubmission with <code>ERR_NONCE_REPLAY</code>. Failure to reject means the operator's nonce log is not functioning — a replay attack would succeed in production. Evidence: resubmission rejection log showing ERR_NONCE_REPLAY.</div>
+      </div>
+    </div>
+    <div class="check-item standard">
+      <div class="check-box"></div>
+      <div class="check-body">
+        <div class="c-id">C-09 · Standard</div>
+        <div class="c-text">Nonce log retention confirmed at 30-day minimum</div>
+        <div class="c-detail">Operator must confirm in writing that their nonce retention period is at least 30 days and provide the storage mechanism used (database, HSM-side log, or equivalent). Evidence: written nonce retention confirmation with mechanism description.</div>
+      </div>
+    </div>
+    <div class="check-item standard">
+      <div class="check-box"></div>
+      <div class="check-body">
+        <div class="c-id">C-10 · Standard</div>
+        <div class="c-text">Custody environment type confirmed as approved</div>
+        <div class="c-detail">Operator must confirm their custody environment is one of the three approved types from M2: institution-owned HSM (FIPS 140-2 Level 3 or above), air-gapped signing system, or institutional multisig with institution as policy owner. Cloud HSM configurations where the provider retains operational access are not approved. Evidence: written custody environment attestation with hardware/software specification.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 06 STEP 3 — ADMIN -->
+<div class="section" id="step3">
+  <div class="section-number">Step 03 — Gate 3</div>
+  <h2>Administrative Onboarding Requirements</h2>
+  <p>Gate 3 covers the administrative and compliance requirements that sit alongside the technical checks. These are not formalities — an operator who has not registered escalation contacts cannot be reached during a Severity 1 incident, and an operator who has not acknowledged the SLA has not accepted the operational obligations that the cohort depends on.</p>
+
+  <h3>Gate 3 Checklist</h3>
+
+  <div class="check-section">
+    <div class="check-item critical">
+      <div class="check-box"></div>
+      <div class="check-body">
+        <div class="c-id">A-01 · Critical</div>
+        <div class="c-text">Primary and secondary escalation contacts registered with Superstructure operations</div>
+        <div class="c-detail">Operator must register a minimum of two escalation contacts: a primary (technical lead, 15-minute response SLA for Severity 1) and a secondary (backup, activated if primary is unresponsive after 15 minutes). Each contact must include: full name, role, direct phone number, email, and timezone. Contacts must be individuals, not shared inboxes or on-call rotation aliases. Evidence: escalation contact registration form with all fields completed, confirmed by Superstructure ops.</div>
+      </div>
+    </div>
+    <div class="check-item critical">
+      <div class="check-box"></div>
+      <div class="check-body">
+        <div class="c-id">A-02 · Critical</div>
+        <div class="c-text">Escalation contact reachability confirmed via test contact</div>
+        <div class="c-detail">Superstructure operations must have successfully reached both the primary and secondary contacts via direct phone within 30 days before audit completion. A contact that cannot be reached is not a valid escalation contact regardless of registration. Evidence: test contact log from Superstructure ops showing successful reach of both contacts.</div>
+      </div>
+    </div>
+    <div class="check-item critical">
+      <div class="check-box"></div>
+      <div class="check-body">
+        <div class="c-id">A-03 · Critical</div>
+        <div class="c-text">SLA acknowledgment signed and on file</div>
+        <div class="c-detail">Operator must provide a signed SLA acknowledgment confirming acceptance of the operational obligations defined in the M3 Validator Operator Integration Specification: 99.0% minimum uptime, 400ms p95 latency ceiling, 30-second telemetry polling interval, 15-minute Severity 1 response, 4-hour RCA acknowledgment window. The SLA acknowledgment must be signed by an authorized representative of the operator organization, not a technical contact. Evidence: signed SLA acknowledgment document on file with Superstructure operations.</div>
+      </div>
+    </div>
+    <div class="check-item high">
+      <div class="check-box"></div>
+      <div class="check-body">
+        <div class="c-id">A-04 · High</div>
+        <div class="c-text">Key custody attestation submitted and reviewed</div>
+        <div class="c-detail">Operator must submit a written attestation confirming: the validator key is held in an approved custody environment; the key has never been held in a cloud HSM where the provider retains operational access; the key has never been transmitted in plaintext; and the custody environment is operated exclusively by the operator organization with no third-party operational access. Evidence: signed key custody attestation reviewed by Superstructure operations.</div>
+      </div>
+    </div>
+    <div class="check-item high">
+      <div class="check-box"></div>
+      <div class="check-body">
+        <div class="c-id">A-05 · High</div>
+        <div class="c-text">Insurance confirmation active per M2 Insurance Architecture</div>
+        <div class="c-detail">Operator must confirm that their insurance coverage satisfying the M2 Insurance and Indemnification Architecture requirements is in force. Coverage must not expire within 90 days of cohort activation date. Evidence: insurance confirmation letter or certificate of coverage with expiration date reviewed by Superstructure operations.</div>
+      </div>
+    </div>
+    <div class="check-item high">
+      <div class="check-box"></div>
+      <div class="check-body">
+        <div class="c-id">A-06 · High</div>
+        <div class="c-text">Geographic and infrastructure diversity requirements met</div>
+        <div class="c-detail">Operator's infrastructure must not create concentration violations: no more than 2 operators per jurisdiction, no more than 2 operators per cloud provider or colocation facility within the founding cohort. Superstructure operations maintains the cohort diversity map and verifies the operator's proposed infrastructure against it before this check passes. Evidence: Superstructure ops diversity check against current cohort map.</div>
+      </div>
+    </div>
+    <div class="check-item standard">
+      <div class="check-box"></div>
+      <div class="check-body">
+        <div class="c-id">A-07 · Standard</div>
+        <div class="c-text">Governance forum access confirmed</div>
+        <div class="c-detail">Operator has created an account on the governance forum and has posted at minimum one introductory message in the founding cohort channel. This confirms they can access the primary deliberation venue before any governance events occur. Evidence: governance forum account with verifiable post in founding cohort channel.</div>
+      </div>
+    </div>
+    <div class="check-item standard">
+      <div class="check-box"></div>
+      <div class="check-body">
+        <div class="c-id">A-08 · Standard</div>
+        <div class="c-text">Operational communication channel membership confirmed</div>
+        <div class="c-detail">Operator's primary escalation contact is a member of the Tier 2 operational coordination channel and has acknowledged the channel's response time expectations (4 hours for operational alerts, 15 minutes for degraded validator alerts). Evidence: channel membership confirmation from Superstructure ops.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 07 STEP 4 — REMEDIATION -->
+<div class="section" id="step4">
+  <div class="section-number">Step 04</div>
+  <h2>Remediation Workflow and Grace Period Definitions</h2>
+  <p>Every failed check has a defined remediation path and a retest window. There are no open-ended remediation periods — an operator who has not resolved a failed check within its window either receives one extension (with Superstructure operations review) or is deferred from the founding cohort.</p>
+
+  <h3>Remediation Tracks by Severity</h3>
+
+  <div class="remediation-track">
+    <div class="rt-header">
+      <span>Critical Failure — Immediate Block</span>
+      <span class="rt-window">48-hour remediation window</span>
+    </div>
+    <div class="rt-body">
+      <p>A Critical check failure blocks all further audit activity immediately. The operator must:</p>
+      <ul>
+        <li>Identify the specific failure mode within 4 hours of notification</li>
+        <li>Submit a written root cause description and remediation plan to Superstructure operations within 12 hours</li>
+        <li>Resolve the failure and request retest within 48 hours of the original failure</li>
+      </ul>
+      <p>If the 48-hour window is missed, the operator may request a single 48-hour extension with written justification. Extensions require Superstructure operations approval and are granted once per check per audit cycle. A second failure on the same Critical check after the extension window expires results in cohort deferral — the operator exits the current audit cycle and must restart the full audit process after a 30-day waiting period.</p>
+    </div>
+  </div>
+
+  <div class="remediation-track">
+    <div class="rt-header">
+      <span>High Failure — Gate Block</span>
+      <span class="rt-window">7-day remediation window</span>
+    </div>
+    <div class="rt-body">
+      <p>A High check failure blocks gate advancement but does not halt audit activity within the current gate. The operator must:</p>
+      <ul>
+        <li>Submit a root cause description within 48 hours of notification</li>
+        <li>Resolve the failure and request retest within 7 days of the original failure</li>
+      </ul>
+      <p>If the 7-day window is missed, the operator may request a single 7-day extension. Extensions require Superstructure operations approval. A second failure on the same High check after the extension window expires results in cohort deferral with a 14-day waiting period before restart.</p>
+    </div>
+  </div>
+
+  <div class="remediation-track">
+    <div class="rt-header">
+      <span>Standard Failure — Tracked Resolution</span>
+      <span class="rt-window">14-day remediation window</span>
+    </div>
+    <div class="rt-body">
+      <p>A Standard check failure is logged and tracked but does not block concurrent audit activity within the same gate. The operator must:</p>
+      <ul>
+        <li>Acknowledge the failure within 48 hours</li>
+        <li>Resolve and request retest within 14 days</li>
+      </ul>
+      <p>Standard failures cannot be carried past gate completion — an operator cannot advance to the next gate with any unresolved Standard failures. Two unresolved Standard failures at the point of gate advancement attempt trigger a Superstructure operations review before any extension is granted.</p>
+    </div>
+  </div>
+
+  <h3>Remediation Workflow — Step by Step</h3>
+  <ul class="phase-list">
+    <li>
+      <div class="phase-num">1</div>
+      <div class="phase-body">
+        <h4>Failure Notification</h4>
+        <p>Superstructure operations notifies the operator of the failed check within 2 hours of audit finding. Notification includes: check ID, failure description, specific threshold or requirement that was not met, remediation window start time, and window expiry timestamp.</p>
+        <div class="phase-tag success">Event: OPERATOR_AUDIT_CHECK_FAILED</div>
+      </div>
+    </li>
+    <li>
+      <div class="phase-num">2</div>
+      <div class="phase-body">
+        <h4>Root Cause Submission</h4>
+        <p>Operator submits written root cause description within the required window (4 hours for Critical, 48 hours for High and Standard). Root cause must identify: the specific technical or operational failure that caused the check to fail, what configuration or process change is being made to resolve it, and confirmation that the fix will not introduce new failure modes.</p>
+        <div class="phase-tag success">Event: OPERATOR_REMEDIATION_PLAN_RECEIVED</div>
+        <div class="phase-tag fail">Fail: ERR_REMEDIATION_PLAN_NOT_SUBMITTED — no response within required window</div>
+        <div class="phase-tag rollback">Rollback: Critical — automatic cohort deferral; High/Standard — escalate to Superstructure operations review</div>
+      </div>
+    </li>
+    <li>
+      <div class="phase-num">3</div>
+      <div class="phase-body">
+        <h4>Retest Request</h4>
+        <p>Operator notifies Superstructure operations that the failure has been resolved and requests retest. Superstructure operations schedules retest within 48 hours of request for Critical and High failures, within 5 business days for Standard failures.</p>
+        <div class="phase-tag success">Event: OPERATOR_RETEST_REQUESTED</div>
+      </div>
+    </li>
+    <li>
+      <div class="phase-num">4</div>
+      <div class="phase-body">
+        <h4>Retest Execution</h4>
+        <p>The specific failed check is re-run against the same pass/fail criteria. A passing retest clears the check and resumes gate progression. A failing retest starts the extension evaluation: was the original remediation window fully used? Was the root cause accurately identified? Superstructure operations makes the extension/deferral decision within 24 hours of retest failure.</p>
+        <div class="phase-tag success">Event: OPERATOR_AUDIT_CHECK_PASSED</div>
+        <div class="phase-tag fail">Event: OPERATOR_AUDIT_DEFERRED — second consecutive fail after extension</div>
+      </div>
+    </li>
+    <li>
+      <div class="phase-num">5</div>
+      <div class="phase-body">
+        <h4>Gate Completion or Deferral</h4>
+        <p>Once all checks in a gate are cleared, Superstructure operations marks the gate complete and logs <code>OPERATOR_GATE_COMPLETE</code>. The operator advances to the next gate. If any check results in cohort deferral, Superstructure operations issues a deferral notice with the waiting period duration and the conditions required before the operator may restart the audit.</p>
+        <div class="phase-tag success">Event: OPERATOR_GATE_COMPLETE</div>
+        <div class="phase-tag fail">Event: OPERATOR_AUDIT_DEFERRED</div>
+      </div>
+    </li>
+  </ul>
+
+  <h3>Remediation Threshold Reference</h3>
+  <div class="threshold-row"><div class="th-label">Failure notification window</div><div class="th-value">2 hours</div><div class="th-note">Superstructure ops notifies operator of failed check</div></div>
+  <div class="threshold-row"><div class="th-label">Critical — root cause submission deadline</div><div class="th-value">4 hours</div><div class="th-note">From failure notification</div></div>
+  <div class="threshold-row"><div class="th-label">Critical — remediation window</div><div class="th-value">48 hours</div><div class="th-note">From original failure; one 48-hour extension available</div></div>
+  <div class="threshold-row"><div class="th-label">High — root cause submission deadline</div><div class="th-value">48 hours</div><div class="th-note">From failure notification</div></div>
+  <div class="threshold-row"><div class="th-label">High — remediation window</div><div class="th-value">7 days</div><div class="th-note">From original failure; one 7-day extension available</div></div>
+  <div class="threshold-row"><div class="th-label">Standard — acknowledgment deadline</div><div class="th-value">48 hours</div><div class="th-note">From failure notification</div></div>
+  <div class="threshold-row"><div class="th-label">Standard — remediation window</div><div class="th-value">14 days</div><div class="th-note">From original failure; cannot carry unresolved Standard failures past gate</div></div>
+  <div class="threshold-row"><div class="th-label">Retest scheduling — Critical/High</div><div class="th-value">48 hours</div><div class="th-note">Superstructure ops schedules retest within 48 hours of request</div></div>
+  <div class="threshold-row"><div class="th-label">Retest scheduling — Standard</div><div class="th-value">5 business days</div><div class="th-note">Superstructure ops schedules retest within 5 business days of request</div></div>
+  <div class="threshold-row"><div class="th-label">Deferral waiting period — Critical second fail</div><div class="th-value">30 days</div><div class="th-note">Before operator may restart full audit cycle</div></div>
+  <div class="threshold-row"><div class="th-label">Deferral waiting period — High second fail</div><div class="th-value">14 days</div><div class="th-note">Before operator may restart full audit cycle</div></div>
+  <div class="threshold-row"><div class="th-label">Extension decision window</div><div class="th-value">24 hours</div><div class="th-note">Superstructure ops makes extension/deferral decision after retest failure</div></div>
+</div>
+
+<!-- 08 STATE MACHINE -->
+<div class="section" id="statemachine">
+  <div class="section-number">Section 08</div>
+  <h2>Audit State Machine</h2>
+  <table class="spec-table">
+    <thead><tr><th>From State</th><th>To State</th><th>Trigger Event</th><th>Severity</th><th>Required Action</th><th>Evidence</th></tr></thead>
+    <tbody>
+      <tr><td>—</td><td><strong>TELEMETRY_SOAK</strong></td><td><code>OPERATOR_AUDIT_INITIATED</code></td><td>—</td><td>72-hour soak period begins; OCP ingestion monitoring active</td><td>Audit initiation record with timestamp</td></tr>
+      <tr><td>TELEMETRY_SOAK</td><td><strong>GATE_1_IN_PROGRESS</strong></td><td><code>OPERATOR_SOAK_COMPLETE</code></td><td>—</td><td>Gate 1 checks T-01 through T-09 run against soak period data</td><td>72-hour soak period log</td></tr>
+      <tr><td>GATE_1_IN_PROGRESS</td><td><strong>GATE_1_COMPLETE</strong></td><td><code>OPERATOR_GATE_COMPLETE</code></td><td>—</td><td>All Gate 1 checks passed; operator advances to Gate 2</td><td>Gate 1 check results, all pass</td></tr>
+      <tr><td>GATE_1_IN_PROGRESS</td><td><strong>REMEDIATION</strong></td><td><code>OPERATOR_AUDIT_CHECK_FAILED</code></td><td>Varies</td><td>Failure notification within 2 hours; remediation window per severity</td><td>Failed check record with threshold detail</td></tr>
+      <tr><td>REMEDIATION</td><td><strong>GATE_1_IN_PROGRESS</strong></td><td><code>OPERATOR_AUDIT_CHECK_PASSED</code></td><td>—</td><td>Retest passed; gate progression resumes</td><td>Retest pass record</td></tr>
+      <tr><td>REMEDIATION</td><td><strong>DEFERRED</strong></td><td><code>OPERATOR_AUDIT_DEFERRED</code></td><td>High</td><td>Deferral notice issued; waiting period begins</td><td>Deferral notice with conditions for restart</td></tr>
+      <tr><td>GATE_1_COMPLETE</td><td><strong>GATE_2_IN_PROGRESS</strong></td><td><code>OPERATOR_GATE_2_INITIATED</code></td><td>—</td><td>Dry run test envelopes issued; routine and emergency runs scheduled</td><td>Gate 1 completion record</td></tr>
+      <tr><td>GATE_2_IN_PROGRESS</td><td><strong>GATE_2_COMPLETE</strong></td><td><code>OPERATOR_GATE_COMPLETE</code></td><td>—</td><td>All Gate 2 checks passed; operator advances to Gate 3</td><td>Dry run records, replay protection test, all pass</td></tr>
+      <tr><td>GATE_2_COMPLETE</td><td><strong>GATE_3_IN_PROGRESS</strong></td><td><code>OPERATOR_GATE_3_INITIATED</code></td><td>—</td><td>Administrative documentation requests issued</td><td>Gate 2 completion record</td></tr>
+      <tr><td>GATE_3_IN_PROGRESS</td><td><strong>GATE_3_COMPLETE</strong></td><td><code>OPERATOR_GATE_COMPLETE</code></td><td>—</td><td>All Gate 3 checks passed; Superstructure ops reviewer sign-off</td><td>All administrative documents on file</td></tr>
+      <tr><td>GATE_3_COMPLETE</td><td><strong>READY</strong></td><td><code>OPERATOR_AUDIT_COMPLETE</code></td><td>—</td><td>Operator enters READY state; institutional deployment may proceed</td><td>Full audit record signed by Superstructure ops reviewer</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 09 ERROR CODES -->
+<div class="section" id="errors">
+  <div class="section-number">Section 09</div>
+  <h2>Error Codes and Typed Failure Reasons</h2>
+  <div class="error-grid">
+    <div class="error-card">
+      <div class="e-code">ERR_TELEMETRY_DELIVERY_RATE_BELOW_THRESHOLD</div>
+      <div class="e-name">Gate 1 — T-02 Fail</div>
+      <p>Telemetry delivery rate fell below 98% during 72-hour soak. OCP delivery rate calculation logged with exact percentage. Critical severity.</p>
+    </div>
+    <div class="error-card">
+      <div class="e-code">ERR_CONSECUTIVE_POLL_GAP_EXCEEDED</div>
+      <div class="e-name">Gate 1 — T-03 Fail</div>
+      <p>Four or more consecutive missed polls detected during soak period. Gap start and end timestamps logged. Critical severity.</p>
+    </div>
+    <div class="error-card">
+      <div class="e-code">ERR_TELEMETRY_SCHEMA_VALIDATION_FAILURE</div>
+      <div class="e-name">Gate 1 — T-04 Fail</div>
+      <p>One or more telemetry payloads failed schema validation. Missing or malformed fields logged per payload. High severity.</p>
+    </div>
+    <div class="error-card">
+      <div class="e-code">ERR_TELEMETRY_SIGNATURE_INVALID</div>
+      <div class="e-name">Gate 1 — T-05 Fail</div>
+      <p>One or more payloads had missing or invalid telemetrySignature field. High severity.</p>
+    </div>
+    <div class="error-card">
+      <div class="e-code">ERR_CRS_BASELINE_BELOW_THRESHOLD</div>
+      <div class="e-name">Gate 1 — T-08 Fail</div>
+      <p>First CRS calculation returned score below 75. Component scores logged for diagnosis. Standard severity.</p>
+    </div>
+    <div class="error-card">
+      <div class="e-code">ERR_CEREMONY_ENVELOPE_LATENCY_EXCEEDED</div>
+      <div class="e-name">Gate 2 — C-01 Fail</div>
+      <p>Envelope delivery latency exceeded 2,000ms at p95. Delivery timestamp log included. Critical severity.</p>
+    </div>
+    <div class="error-card">
+      <div class="e-code">ERR_CEREMONY_ROLE_COLLAPSE</div>
+      <div class="e-name">Gate 2 — C-02 Fail</div>
+      <p>Same individual occupied two or more roles in the ceremony sequence. Immediate fail. Critical severity.</p>
+    </div>
+    <div class="error-card">
+      <div class="e-code">ERR_REVIEWER_ABSENT</div>
+      <div class="e-name">Gate 2 — C-03 Fail</div>
+      <p>Reviewer role not present in ceremony completion record. Ceremony completed with Maker and Checker only. Critical severity.</p>
+    </div>
+    <div class="error-card">
+      <div class="e-code">ERR_CHECKER_VERIFICATION_NOT_ATTESTED</div>
+      <div class="e-name">Gate 2 — C-04 Fail</div>
+      <p>Checker did not provide independent hash verification attestation. Critical severity.</p>
+    </div>
+    <div class="error-card">
+      <div class="e-code">ERR_DRY_RUN_TIMEOUT</div>
+      <div class="e-name">Gate 2 — C-05 or C-06 Fail</div>
+      <p>Ceremony completion time exceeded threshold (300s routine, 180s emergency). Completion timestamp logged. High severity.</p>
+    </div>
+    <div class="error-card">
+      <div class="e-code">ERR_SIGNED_PAYLOAD_HASH_MISMATCH</div>
+      <div class="e-name">Gate 2 — C-07 Fail</div>
+      <p>Returned signed payload hash does not match canonical payload from test envelope. High severity. Requires investigation before retest.</p>
+    </div>
+    <div class="error-card">
+      <div class="e-code">ERR_REPLAY_PROTECTION_NOT_FUNCTIONING</div>
+      <div class="e-name">Gate 2 — C-08 Fail</div>
+      <p>Resubmission of used nonce was accepted rather than rejected with ERR_NONCE_REPLAY. High severity.</p>
+    </div>
+    <div class="error-card">
+      <div class="e-code">ERR_ESCALATION_CONTACT_UNREACHABLE</div>
+      <div class="e-name">Gate 3 — A-02 Fail</div>
+      <p>Primary or secondary escalation contact could not be reached via direct phone during test contact. High severity.</p>
+    </div>
+    <div class="error-card">
+      <div class="e-code">ERR_REMEDIATION_PLAN_NOT_SUBMITTED</div>
+      <div class="e-name">Remediation — Step 2 Fail</div>
+      <p>Operator did not submit root cause description within required window. Triggers escalation to Superstructure operations review. Severity depends on original check.</p>
+    </div>
+  </div>
+</div>
+
+<!-- 10 SCHEMAS -->
+<div class="section" id="schemas">
+  <div class="section-number">Section 10</div>
+  <h2>Audit Record Schemas</h2>
+
+  <h3>Operator Audit Record</h3>
+  <p>The master record for each operator's audit cycle. Updated after each check result.</p>
+  <div class="schema-block">
+    <span class="sb">{</span><br>
+    &nbsp;&nbsp;<span class="sf">"auditId"</span>: <span class="st">string</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="sc">// unique audit cycle identifier</span><br>
+    &nbsp;&nbsp;<span class="sf">"operatorId"</span>: <span class="st">string</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="sc">// operator identifier from founding cohort registry</span><br>
+    &nbsp;&nbsp;<span class="sf">"auditState"</span>: <span class="st">string</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="sc">// TELEMETRY_SOAK | GATE_1_IN_PROGRESS | GATE_1_COMPLETE | GATE_2_IN_PROGRESS | GATE_2_COMPLETE | GATE_3_IN_PROGRESS | GATE_3_COMPLETE | READY | REMEDIATION | DEFERRED</span><br>
+    &nbsp;&nbsp;<span class="sf">"soakStartedAt"</span>: <span class="st">string</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="sc">// ISO 8601 UTC; when 72-hour soak period began</span><br>
+    &nbsp;&nbsp;<span class="sf">"soakCompletedAt"</span>: <span class="st">string | null</span>,&nbsp;&nbsp;&nbsp;<span class="sc">// ISO 8601 UTC; populated when soak period ends</span><br>
+    &nbsp;&nbsp;<span class="sf">"checkResults"</span>: <span class="st">array</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="sc">// array of CheckResult objects (see below)</span><br>
+    &nbsp;&nbsp;<span class="sf">"activeRemediations"</span>: <span class="st">array</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="sc">// array of open remediation records</span><br>
+    &nbsp;&nbsp;<span class="sf">"reviewerSignoff"</span>: <span class="st">string | null</span>,&nbsp;&nbsp;<span class="sc">// Superstructure ops reviewer identifier; null until Gate 3 complete</span><br>
+    &nbsp;&nbsp;<span class="sf">"reviewerSignoffAt"</span>: <span class="st">string | null</span>,<span class="sc">// ISO 8601 UTC; populated at final sign-off</span><br>
+    &nbsp;&nbsp;<span class="sf">"cohortActivationAt"</span>: <span class="st">string | null</span><span class="sc">// ISO 8601 UTC; populated when OPERATOR_AUDIT_COMPLETE fires</span><br>
+    <span class="sb">}</span>
+  </div>
+
+  <h3>Check Result Object</h3>
+  <div class="schema-block">
+    <span class="sb">{</span><br>
+    &nbsp;&nbsp;<span class="sf">"checkId"</span>: <span class="st">string</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="sc">// e.g., "T-01", "C-03", "A-02"</span><br>
+    &nbsp;&nbsp;<span class="sf">"gate"</span>: <span class="st">number</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="sc">// 1, 2, or 3</span><br>
+    &nbsp;&nbsp;<span class="sf">"severity"</span>: <span class="st">string</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="sc">// "CRITICAL" | "HIGH" | "STANDARD"</span><br>
+    &nbsp;&nbsp;<span class="sf">"result"</span>: <span class="st">string</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="sc">// "PASS" | "FAIL" | "PENDING"</span><br>
+    &nbsp;&nbsp;<span class="sf">"testedAt"</span>: <span class="st">string</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="sc">// ISO 8601 UTC</span><br>
+    &nbsp;&nbsp;<span class="sf">"evidenceRef"</span>: <span class="st">string</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="sc">// reference to evidence artifact (log ID, document ID, etc.)</span><br>
+    &nbsp;&nbsp;<span class="sf">"failureDetail"</span>: <span class="st">string | null</span>,&nbsp;&nbsp;<span class="sc">// populated on fail — specific threshold breached or requirement not met</span><br>
+    &nbsp;&nbsp;<span class="sf">"errorCode"</span>: <span class="st">string | null</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="sc">// ERR_* code if applicable; null on pass</span><br>
+    &nbsp;&nbsp;<span class="sf">"remediationId"</span>: <span class="st">string | null</span>&nbsp;&nbsp;<span class="sc">// links to remediation record if check is in remediation</span><br>
+    <span class="sb">}</span>
+  </div>
+</div>
+
+<!-- 11 EVENTS -->
+<div class="section" id="events">
+  <div class="section-number">Section 11</div>
+  <h2>Audit Event Registry</h2>
+  <ul class="event-list">
+    <li><span class="event-tag">OPERATOR_AUDIT_INITIATED</span> Audit cycle begins; 72-hour telemetry soak period starts; OCP ingestion monitoring active</li>
+    <li><span class="event-tag">OPERATOR_SOAK_COMPLETE</span> 72-hour soak period ended; Gate 1 checks initiated against soak data</li>
+    <li><span class="event-tag">OPERATOR_AUDIT_CHECK_PASSED</span> Individual check cleared; gate progression continues or resumes if in remediation</li>
+    <li><span class="event-tag">OPERATOR_AUDIT_CHECK_FAILED</span> Individual check failed; failure notification issued within 2 hours; remediation window opens</li>
+    <li><span class="event-tag">OPERATOR_GATE_COMPLETE</span> All checks in a gate cleared; operator advances to next gate</li>
+    <li><span class="event-tag">OPERATOR_GATE_2_INITIATED</span> Gate 1 complete; dry run test envelopes issued; routine and emergency runs scheduled</li>
+    <li><span class="event-tag">OPERATOR_GATE_3_INITIATED</span> Gate 2 complete; administrative documentation requests issued</li>
+    <li><span class="event-tag">OPERATOR_REMEDIATION_PLAN_RECEIVED</span> Operator submitted root cause description and remediation plan within required window</li>
+    <li><span class="event-tag">OPERATOR_RETEST_REQUESTED</span> Operator notified Superstructure ops that failure has been resolved; retest scheduled</li>
+    <li><span class="event-tag">OPERATOR_AUDIT_COMPLETE</span> All three gates cleared; Superstructure ops reviewer signed off; operator enters READY state</li>
+    <li><span class="event-tag">OPERATOR_AUDIT_DEFERRED</span> Second consecutive fail after extension window; deferral notice issued with waiting period</li>
+    <li><span class="event-tag err">ERR_TELEMETRY_DELIVERY_RATE_BELOW_THRESHOLD</span> Gate 1 T-02 fail — delivery rate below 98%</li>
+    <li><span class="event-tag err">ERR_CONSECUTIVE_POLL_GAP_EXCEEDED</span> Gate 1 T-03 fail — four or more consecutive missed polls</li>
+    <li><span class="event-tag err">ERR_CEREMONY_ROLE_COLLAPSE</span> Gate 2 C-02 fail — same individual in two or more roles</li>
+    <li><span class="event-tag err">ERR_REVIEWER_ABSENT</span> Gate 2 C-03 fail — Reviewer role not present in ceremony record</li>
+    <li><span class="event-tag err">ERR_REPLAY_PROTECTION_NOT_FUNCTIONING</span> Gate 2 C-08 fail — used nonce accepted rather than rejected</li>
+    <li><span class="event-tag err">ERR_REMEDIATION_PLAN_NOT_SUBMITTED</span> Operator did not submit root cause within required window</li>
+  </ul>
+</div>
+
+<!-- 12 CONTROLS -->
+<div class="section" id="controls">
+  <div class="section-number">Section 12</div>
+  <h2>Operational Controls and Runbook</h2>
+  <table class="spec-table">
+    <thead><tr><th>Control Area</th><th>Required Control</th><th>Evidence</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Soak Period Integrity</strong></td><td>Gate 1 checks cannot run until OCP has confirmed 72 consecutive hours of telemetry ingestion from the operator. System enforces the soak period — a reviewer cannot manually override it.</td><td>Soak period start and end timestamps in audit record</td></tr>
+      <tr><td><strong>Sequential Gate Enforcement</strong></td><td>Middleware blocks Gate 2 initiation until all Gate 1 checks show PASS in the audit record. Same for Gate 2 → Gate 3. No check can be in PENDING or FAIL state at gate advancement.</td><td>Gate completion record with all check IDs in PASS state</td></tr>
+      <tr><td><strong>Reviewer Sign-Off Required</strong></td><td>OPERATOR_AUDIT_COMPLETE event cannot fire without a populated reviewerSignoff field in the audit record. Automated checks are necessary but not sufficient for cohort activation.</td><td>Audit record with reviewerSignoff and reviewerSignoffAt populated</td></tr>
+      <tr><td><strong>Dry Run Independence</strong></td><td>Routine and emergency dry runs are run on separate days. The operator cannot know the emergency dry run timing in advance beyond the 90-second notice window. Superstructure ops schedules without pre-notification.</td><td>Separate ceremony records for routine and emergency runs with distinct timestamps</td></tr>
+      <tr><td><strong>Remediation Window Enforcement</strong></td><td>Remediation windows are tracked with explicit expiry timestamps. Superstructure operations notifies operators 12 hours before a window expires. Expired windows without a retest request trigger automatic escalation — they do not silently extend.</td><td>Remediation record with window expiry timestamp and notification log</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Runbook — Full Audit Cycle</h3>
+  <ol>
+    <li>Initiate audit — log <code>OPERATOR_AUDIT_INITIATED</code>, confirm OCP ingestion active, start 72-hour soak clock</li>
+    <li>After 72 hours: run Gate 1 checks T-01 through T-09 against soak data; log each result</li>
+    <li>For any failed checks: issue failure notification within 2 hours; track remediation window</li>
+    <li>Once all Gate 1 checks pass: log <code>OPERATOR_GATE_COMPLETE</code>, initiate Gate 2 — schedule routine dry run, set emergency dry run date (unannounced until 90-second notice)</li>
+    <li>Run routine dry run; run checks C-01 through C-10; log results</li>
+    <li>Run emergency dry run on separate day with 90-second notice; re-run timing checks C-05/C-06 under emergency conditions</li>
+    <li>Run replay protection test C-08 after any successful dry run</li>
+    <li>Once all Gate 2 checks pass: log <code>OPERATOR_GATE_COMPLETE</code>, initiate Gate 3 — issue admin documentation requests</li>
+    <li>Run Gate 3 checks A-01 through A-08 as documents are received; log results</li>
+    <li>Once all Gate 3 checks pass: Superstructure ops reviewer reviews full audit record, signs off, logs <code>OPERATOR_AUDIT_COMPLETE</code></li>
+    <li>Operator enters READY state; institutional deployment proceeds per M3 Institutional Deployment Pathway</li>
+  </ol>
+</div>
+
+<!-- 13 EVIDENCE -->
+<div class="section" id="evidence">
+  <div class="section-number">Section 13</div>
+  <h2>Required Evidence Artifacts</h2>
+  <ul class="evidence-list">
+    <li>OCP ingestion log — 72-hour continuous record of telemetry payload receipt with timestamps, delivery rate calculation, and consecutive gap analysis</li>
+    <li>Schema validation log — pass/fail record for every telemetry payload received during soak period</li>
+    <li>Signature validation log — Ed25519 telemetrySignature validation result for every payload</li>
+    <li>CRS baseline calculation — first completed 60-second scoring cycle output with component scores (VI score weight, uptime weight, latency weight, freshness weight)</li>
+    <li>Routing weight assignment log — OCP routing weight record with policy hash and CRS snapshot</li>
+    <li>Dry run ceremony records — routine and emergency runs; envelope delivery timestamps, completion timestamps, role attestations for all three roles, signed payload hash</li>
+    <li>Checker hash verification attestation — written confirmation from Checker that payload hash was independently verified before signing</li>
+    <li>Replay protection test log — resubmission attempt record showing ERR_NONCE_REPLAY response</li>
+    <li>Escalation contact registration form — completed with all required fields for primary and secondary contacts</li>
+    <li>Test contact log — Superstructure ops record of successful direct phone contact with both escalation contacts</li>
+    <li>Signed SLA acknowledgment — signed by authorized organizational representative</li>
+    <li>Key custody attestation — signed confirmation of approved custody environment type</li>
+    <li>Insurance confirmation — certificate of coverage with expiration date</li>
+    <li>Superstructure ops reviewer sign-off — signed audit completion record with reviewer identifier and timestamp</li>
+  </ul>
+</div>
+
+<!-- 14 ASSURANCE -->
+<div class="section" id="assurance">
+  <div class="section-number">Section 14</div>
+  <h2>Zero-Custody Audit Assurance</h2>
+  <div class="assurance">
+    <div class="a-label">Cohort Onboarding Custody Guarantee</div>
+    <p>No part of this audit process requires an operator to transmit key material, expose their custody environment to Superstructure operations, or demonstrate key custody through any mechanism other than signed attestation and dry run ceremony completion.</p>
+    <p>The signing ceremony dry runs verify that the operator's custody environment can complete the ceremony workflow — they do not expose the key. Test envelopes are flagged as test payloads and produce no on-chain action. The signed test payload hash confirms the ceremony completed correctly. The key that signed it remains in the operator's custody environment throughout.</p>
+    <p>The audit gate model confirms operational readiness. It does not transfer any custody rights to Superstructure operations. An operator who completes this audit and enters READY state has demonstrated they can participate in the cohort under the zero-custody model — they have not granted any party access to their key as part of that demonstration.</p>
+  </div>
+</div>
+
+<!-- 15 VERIFICATION -->
+<div class="section" id="verification">
+  <div class="section-number">Section 15</div>
+  <h2>Completion Verification</h2>
+  <table class="spec-table">
+    <thead><tr><th>Required Step</th><th>Addressed In</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>Define telemetry and monitoring live-verification criteria, including OCP ingestion checks and routing score baseline validation</td><td>Section 04 — Gate 1 with 9 checklist items, 8 numeric thresholds with specific values, 72-hour soak requirement, CRS baseline ≥ 75, routing weight assignment confirmation</td><td class="check-result complete">✓ Complete</td></tr>
+      <tr><td>Outline signing ceremony dry-run pass/fail conditions, envelope delivery latency thresholds, and evidence requirements</td><td>Section 05 — Gate 2 with 10 checklist items, 8 thresholds including 2,000ms latency ceiling, 300s and 180s completion windows, Maker/Checker/Reviewer sequence requirements, replay protection test, Checker attestation requirement</td><td class="check-result complete">✓ Complete</td></tr>
+      <tr><td>Structure the administrative onboarding section covering escalation contact registration, SLA acknowledgment, and key custody attestations</td><td>Section 06 — Gate 3 with 8 checklist items covering primary and secondary contact registration and reachability, signed SLA acknowledgment, key custody attestation, insurance confirmation, diversity requirements, governance forum access</td><td class="check-result complete">✓ Complete</td></tr>
+      <tr><td>Create the remediation workflow and grace period definitions for operators who fail initial readiness checks</td><td>Section 07 — three remediation tracks by severity (Critical: 48h, High: 7 days, Standard: 14 days), five-phase remediation process with named events and rollback paths, 12-threshold reference table, deferral conditions and waiting periods</td><td class="check-result complete">✓ Complete</td></tr>
+      <tr><td>Publish the complete audit checklist as a publicly accessible document for the founding cohort</td><td>This document — includes audit gate model, 27 checklist items across 3 gates, audit state machine, 14 error codes, 2 payload schemas, evidence artifact list, and change log</td><td class="check-result complete">✓ Complete</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 16 CHANGELOG -->
+<div class="section" id="changelog">
+  <div class="section-number">Section 16</div>
+  <h2>Change Log</h2>
+  <div class="changelog-row">
+    <div class="cl-ver">v1.0</div>
+    <div class="cl-date">March 2026</div>
+    <div class="cl-note">Initial publication. Defined three-gate sequential audit model with binary pass/fail for all checks; Gate 1 telemetry verification (9 checks, 8 thresholds including 72-hour soak, 98% delivery rate, 350ms p95 latency ceiling, CRS baseline ≥ 75); Gate 2 signing ceremony dry run (10 checks, routine and emergency scenarios, 2,000ms envelope latency ceiling, 300s and 180s completion windows, Checker attestation requirement, replay protection verification); Gate 3 administrative onboarding (8 checks covering escalation contacts with reachability test, signed SLA acknowledgment, key custody attestation, insurance, diversity); three-track remediation workflow with defined windows per severity and deferral conditions; 14 typed error codes; two payload schemas; 11 audit events; assumption registry with 2 open items for PFT core confirmation.</div>
+  </div>
+</div>
+
+</div>
+<div class="footer-bar">Superstructure M4 · Cohort Onboarding and Technical Readiness Audit · Version 1.0 · Post Fiat Network</div>
+</body>
+</html>
